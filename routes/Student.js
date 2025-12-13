@@ -1,10 +1,5 @@
 var express = require("express");
-const {
-  getAllStudents,
-  createStudent,
-  deleteStudentById,
-  updateStudentById,
-} = require("../controller/studentController");
+const { getAllStudents, createStudent, deleteStudentById, updateStudentById } = require("../controllers/studentController");
 
 var router = express.Router();
 

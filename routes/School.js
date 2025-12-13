@@ -5,7 +5,7 @@ const {
   deleteSchoolById,
   updateSchoolById,
   addPayment,
-} = require("../controller/schoolController");
+} = require("../controllers/schoolController");
 var router = express.Router();
 
 /* GET users listing. */

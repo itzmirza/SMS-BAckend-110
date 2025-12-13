@@ -1,9 +1,9 @@
-var Student = require("../models/studentSchema");
+const Students = require("../modals/studentSchema");
 
 // Get all students
 const getAllStudents = async (req, res) => {
   try {
-    const studentData = await Student.find();
+    const studentData = await Students.find();
     if (!studentData || studentData.length === 0) {
       return res.status(404).json({
         code: 404,
