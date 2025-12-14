@@ -23,7 +23,7 @@ const busSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
+  studentIds:[{ type: mongoose.Schema.Types.ObjectId, ref: "Students" }],
   createdAt: {
     type: Date,
     default: Date.now,
