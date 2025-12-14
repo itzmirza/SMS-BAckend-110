@@ -1,4 +1,4 @@
-var School = require("../models/schoolSchema");
+var School = require("../modals/schoolSchema");
 
 // Controller function to create a new school
 const getAllSchools = async (req, res) => {

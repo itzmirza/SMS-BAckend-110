@@ -1,4 +1,5 @@
-const Drivers = require("../models/driverSchema");
+const Drivers = require("../modals/driverSchema");
+
 const getallDrivers = async (req, res) => {
   try {
     const drivers = await Drivers.find().sort({ createdAt: -1 });

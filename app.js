@@ -8,14 +8,16 @@ const cors = require("cors");
 var schoolRouter = require("./routes/School");
 var busRouter = require("./routes/Bus");
 var driverRouter = require("./routes/Driver");
-
+var studentRouter = require("./routes/Student");
+var teacherRouter = require("./routes/teacher");
+var recoverRouter = require("./routes/recovery");
 var app = express();
 app.use(cors());
 
 // app.js or index.js
 const mongoose = require('mongoose');
 
-const mongoDBUri = 'mongodb+srv://mudasirmaqbool161_db_user:6a1m8H8175tWNivh@development.gau35t7.mongodb.net/SuperAdmin'; // Replace with your URI
+const mongoDBUri = 'mongodb+srv://mudasirmaqbool161_db_user:6a1m8H8175tWNivh@development.gau35t7.mongodb.net/SuperAdmin';  // Replace with your URI
 
 async function main() {
   await mongoose.connect(mongoDBUri);
@@ -38,7 +40,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/school", schoolRouter);
 app.use("/bus", busRouter);
 app.use("/driver", driverRouter);
+app.use("/student", studentRouter);
 
+app.use("/teacher", teacherRouter);
+app.use("/recovery", recoverRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

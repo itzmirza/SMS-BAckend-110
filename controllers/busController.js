@@ -1,4 +1,4 @@
-const Buses = require("../models/busSchema");
+const Buses = require("../modals/busSchema");
 
 const getallBuses = async (req, res) => {
   try {

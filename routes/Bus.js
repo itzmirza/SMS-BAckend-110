@@ -1,5 +1,5 @@
 var express = require('express');
-const { getallBuses, createBus, updateBusById, deleteBusById } = require('../controller/busController');
+const { getallBuses, createBus, updateBusById, deleteBusById } = require('../controllers/busController');
 var router = express.Router();
 
 router.get('/get_all_buses', getallBuses);
