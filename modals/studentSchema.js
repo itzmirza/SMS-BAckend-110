@@ -28,6 +28,10 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  busId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Bus",
+  },
   createdAt: {
     type: Date,
     default: Date.now,

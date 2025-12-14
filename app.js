@@ -6,6 +6,8 @@ var logger = require("morgan");
 const cors = require("cors");
 
 var schoolRouter = require("./routes/School");
+var busRouter = require("./routes/Bus");
+var driverRouter = require("./routes/Driver");
 var studentRouter = require("./routes/Student");
 var teacherRouter = require("./routes/teacher");
 var recoverRouter = require("./routes/recovery");
@@ -37,6 +39,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/school", schoolRouter);
+app.use("/bus", busRouter);
+app.use("/driver", driverRouter);
 app.use("/student", studentRouter);
 app.use("/class", classRouter);
 
