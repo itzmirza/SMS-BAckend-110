@@ -28,7 +28,7 @@ const getAllStudents = async (req, res) => {
 // Create new student
 const createStudent = async (req, res) => {
   try {
-    const existingStudent = await Student.findOne({
+    const existingStudent = await Students.findOne({
       email: req?.body?.email, // or rollNo / registrationNo
     });
 
@@ -39,7 +39,7 @@ const createStudent = async (req, res) => {
       });
     }
 
-    const newStudent = await Student.create(req.body);
+    const newStudent = await Students.create(req.body);
 
     return res.status(201).json({
       code: 201,
@@ -60,7 +60,7 @@ const deleteStudentById = async (req, res) => {
   try {
     const studentId = req.params.id;
 
-    const existingStudent = await Student.findById(studentId);
+    const existingStudent = await Students.findById(studentId);
     if (!existingStudent) {
       return res.status(404).json({
         code: 404,
@@ -68,7 +68,7 @@ const deleteStudentById = async (req, res) => {
       });
     }
 
-    await Student.findByIdAndDelete(studentId);
+    await Students.findByIdAndDelete(studentId);
 
     return res.status(200).json({
       code: 200,
@@ -89,7 +89,7 @@ const updateStudentById = async (req, res) => {
     const studentId = req.params.id;
     const studentData = req.body;
 
-    const existingStudent = await Student.findById(studentId);
+    const existingStudent = await Students.findById(studentId);
     if (!existingStudent) {
       return res.status(404).json({
         code: 404,
@@ -97,7 +97,7 @@ const updateStudentById = async (req, res) => {
       });
     }
 
-    const updatedStudent = await Student.findByIdAndUpdate(
+    const updatedStudent = await Students.findByIdAndUpdate(
       studentId,
       studentData,
       { new: true }
