@@ -12,23 +12,35 @@ const driverSchema = new mongoose.Schema({
   licenseNumber: {
     type: Number,
     required: true,
+    unique: true,
   },
-
-  assignedBus: {
-    type: String,
+  busId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Buses",
     required: true,
   },
   status: {
     type: String,
     required: true,
   },
-
+  email: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  cnic: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
-
-const Drivers = mongoose.model("Driver", driverSchema);
+const Drivers = mongoose.model("Drivers", driverSchema);
 
 module.exports = Drivers;

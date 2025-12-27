@@ -1,36 +1,33 @@
-
 const mongoose = require("mongoose");
 
 const busSchema = new mongoose.Schema({
   registrationNumber: {
     type: String,
     required: true,
+    unique:true,
   },
   model: {
-    type: Number,
-    required: true,
-  },
-  capacity: { 
-    type: Number,
-    required: true,
-  },
-
-  assignedDriver: {
     type: String,
     required: true,
+  },
+  capacity: {
+    type: Number,
+    required: true,
+  },
+  driverId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Drivers",
   },
   status: {
     type: String,
     required: true,
   },
-  studentIds:[{ type: mongoose.Schema.Types.ObjectId, ref: "Students" }],
+  studentIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "Students" }],
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
 
-// Compile the schema into a model
-const Buses = mongoose.model("Bus", busSchema);
-
-module.exports = Buses; // Export the model for use in other files
+const Buses = mongoose.model("Buses", busSchema);
+module.exports = Buses;

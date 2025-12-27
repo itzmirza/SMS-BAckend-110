@@ -1,93 +1,92 @@
 const Drivers = require("../modals/driverSchema");
+const Buses = require("../modals/busSchema"); // ✅ zaroori
 
-const getallDrivers = async (req, res) => {
+const getAlldrivers = async (req, res) => {
   try {
-    const drivers = await Drivers.find().sort({ createdAt: -1 });
-    return res.status(200).json({
-      code: 200,
-      data: drivers,
-      message: "Drivers Fetched Successfully",
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const getDrivers = await Drivers.find()
+      .populate("busId")
+      .sort({ createdAt: -1 });
+    if (!getDrivers) {
+      return res.send({ code: 400, message: "No Driver Found" });
+    }
+    res.send({ code: 200, message: "Fetching Drivers", data: getDrivers });
+  } catch (err) {
+    res.send({ code: 500, message: "Server Error", error: err.message });
   }
 };
 
 const createDriver = async (req, res) => {
   try {
-     const existingDriver = await Drivers.findOne({ name: req?.body?.name });
-  if (existingDriver) {
-    return res.status(400).json({
-      code: 400,
-      message: "This Driver Already Exist",
+    const existingDriver = await Drivers.findOne({
+      licenseNumber: req?.body?.licenseNumber,
     });
-  }
-    const newDriver = await Drivers.create(req?.body);
-    if (!newDriver) {
-      return res.status(400).json({
-        code: 400,
-        message: "Something Went Wrong",
-      });
+    if (existingDriver) {
+      return res.send({ code: 400, message: "Driver Already Exist" });
     }
-    return res.status(200).json({
-      code: 200,
-      data: newDriver,
-      message: "Driver Created Successfully",
+    const newDriver = await Drivers.create(req.body);
+    if (!newDriver) {
+      return res.send({ code: 400, message: "Something Went Wrong" });
+    }
+    await Buses.findByIdAndUpdate(req.body.busId, {
+      driverId: newDriver._id,
     });
+    res.send({ code: 200, message: "Driver Created Successfully" });
   } catch (err) {
-    return res
-      .status(500)
-      .json({ code: 500, message: "Server Error", error: err.message });
+    res.send({ code: 500, message: "Server Error", error: err.message });
   }
 };
 
-const updateDriverById = async (req, res) => {
+const UpdateDriverById = async (req, res) => {
   try {
-    const driverId = req.params.id;
+    const findDriverId = await Drivers.findById(req.params.id);
     const driverData = req.body;
-    const existingDriver = await Drivers.findById(driverId);
-    if (!existingDriver) {
-      return res.status(404).send({ code: 404, message: "Driver Not Found" });
+    const existingDriver = await Drivers.findOne({
+      licenseNumber: req?.body?.licenseNumber,
+      _id: { $ne: req.params.id },
+    });
+    if (existingDriver) {
+      return res.send({ code: 400, message: "Driver Already Exist" });
     }
     const updatedDriver = await Drivers.findByIdAndUpdate(
-      existingDriver?._id,
+      findDriverId,
       driverData,
-      { new: true }
+      {
+        new: true,
+      }
     );
-    return res.status(200).json({
-      code: 200,
-      data: updatedDriver,
-      message: "Driver Updated Successfully",
-    });
+    if (!updatedDriver) {
+      return res.send({ code: 400, message: "Something Went Wrong" });
+    }
+    res.send({ code: 200, message: "Driver updated Successfully" });
   } catch (err) {
-    return res
-      .status(500)
-      .json({ code: 500, message: "Server Error", error: err.message });
+    res.send({ code: 500, message: "Server Error", error: err.message });
   }
 };
-
-const deleteDriverById = async (req, res) => {
+const deleteDriverbyId = async (req, res) => {
   try {
-    const driverId = req.params.id;
-    const existingDriver = await Drivers.findById(driverId);
-    if (!existingDriver) {
-      return res.status(404).send({ code: 404, message: "Driver Not Found" });
+    const findDriverId = await Drivers.findById(req.params.id);
+    if (!findDriverId) {
+      return res.send({ code: 400, message: "Driver Not Exist" });
     }
-    await Drivers.findByIdAndDelete(existingDriver?._id);
-    return res.status(200).json({
-      code: 200,
-      message: "Driver Deleted Successfully",
-    });
+    const deletedDriver = await Drivers.findByIdAndDelete(req.params.id);
+
+    if (!deletedDriver) {
+      return res.send({ code: 400, message: "Something Went Wrong" });
+    }
+    if (findDriverId.busId) {
+      await Buses.findByIdAndUpdate(findDriverId.busId, {
+        driverId: null,
+      });
+    }
+    res.send({ code: 200, message: "Driver Deleted Successfully" });
   } catch (err) {
-    return res
-      .status(500)
-      .json({ code: 500, message: "Server Error", error: err.message });
+    res.send({ code: 500, message: "Server Error", error: err.message });
   }
 };
 
 module.exports = {
-  getallDrivers,
+  getAlldrivers,
   createDriver,
-  updateDriverById,
-  deleteDriverById,
+  UpdateDriverById,
+  deleteDriverbyId,
 };
