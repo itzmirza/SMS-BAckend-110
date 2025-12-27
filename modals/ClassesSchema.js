@@ -8,28 +8,20 @@ const classSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  batch: {
+  section: {
     type: String,
     required: true,
   },
-  teacherName: {
-    type: String,
-    required: true,
+  teacherId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Teacher",
   },
-  strength: {
+  RoomNumber: {
     type: Number,
     required: true,
   },
-  Academicyear: {
-    type: String,
-    required: true,
-  },
- 
-  date: {
-    type: Date,
-    default: null,
-    
-  },
+  
+
   createdAt: {
     type: Date,
     default: Date.now,

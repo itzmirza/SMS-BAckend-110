@@ -1,9 +1,10 @@
 var Class = require("../modals/ClassesSchema");
+var Teacher = require("../modals/teacher");
 
 // Controller function to create a new school
 const getAllclasses = async (req, res) => {
   try {
-    const classData = await Class.find();
+    const classData = await Class.find().populate("teacherId");
     if (!classData) {
       return res.status(400).json({ code: 400, message: "no class found" });
     }
