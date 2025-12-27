@@ -4,34 +4,82 @@ const mongoose = require("mongoose");
 
 // Define a schema: this structures the data
 const studentSchema = new mongoose.Schema({
-  name: {
+ 
+  // Student information
+  firstName: {
     type: String,
     required: true,
   },
-  grade: {
+  lastName: {
     type: String,
     required: true,
   },
-  class: {
+  contact: {
+    type: Number,
+    required: true,
+  },
+  gender: {
+    type: String,
+    required: true,
+    enum: ['Male', 'Female', 'Other'],
+  },
+  religion: {
     type: String,
     required: true,
   },
-  academicyear: {
+  dateOfBirth: {
+    type: Date,
+    required: true,
+  },
+  bFormNumber: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  homeAddress: {
     type: String,
     required: true,
   },
-  assignbus: {
+
+// parent information
+
+  guardianName: {
     type: String,
     required: true,
   },
-  status: {
+  guardianContact: {
+    type: Number,
+    required: true,
+  },
+  CNIC: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
+  guardianEmail: {
     type: String,
     required: true,
   },
-  busId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Bus",
+  Address: {
+    type: String,
+    required: true,
   },
+  occupation: {
+    type: String,
+    required: true,
+  },
+  
+  classId:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Classes"
+  }],
+
+
+  busId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Buses"
+  },
+
   createdAt: {
     type: Date,
     default: Date.now,

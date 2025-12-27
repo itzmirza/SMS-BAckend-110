@@ -1,9 +1,11 @@
 const Students = require("../modals/studentSchema");
+const Buses = require("../modals/busSchema");
+const Classes = require("../modals/ClassesSchema");
 
 // Get all students
 const getAllStudents = async (req, res) => {
   try {
-    const studentData = await Students.find();
+    const studentData = await Students.find().populate("classId").populate("busId");
     if (!studentData || studentData.length === 0) {
       return res.status(404).json({
         code: 404,
