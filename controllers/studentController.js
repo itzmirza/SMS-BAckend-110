@@ -32,7 +32,7 @@ const createStudent = async (req, res) => {
       email: req?.body?.email, // or rollNo / registrationNo
     });
 
-    if (existingStudent) {
+    if (!existingStudent) {
       return res.status(400).json({
         code: 400,
         message: "Student already exists",

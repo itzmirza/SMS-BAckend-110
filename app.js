@@ -11,6 +11,7 @@ var driverRouter = require("./routes/Driver");
 var studentRouter = require("./routes/Student");
 var teacherRouter = require("./routes/teacher");
 var recoverRouter = require("./routes/recovery");
+var classRouter = require("./routes/Class");
 var app = express();
 app.use(cors());
 
@@ -41,6 +42,7 @@ app.use("/school", schoolRouter);
 app.use("/bus", busRouter);
 app.use("/driver", driverRouter);
 app.use("/student", studentRouter);
+app.use("/class", classRouter);
 
 app.use("/teacher", teacherRouter);
 app.use("/recovery", recoverRouter);
