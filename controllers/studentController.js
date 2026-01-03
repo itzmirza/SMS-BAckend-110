@@ -5,10 +5,13 @@ const Classes = require("../modals/ClassesSchema");
 // Get all students
 const getAllStudents = async (req, res) => {
   try {
-    const studentData = await Students.find().populate("classId").populate("busId");
+    const studentData = await Students.find()
+      .populate("classId")
+      .populate("busId");
     if (!studentData || studentData.length === 0) {
-      return res.status(404).json({
-        code: 404,
+      return res.send({
+        code: 400,
+        data: studentData,
         message: "No students found",
       });
     }
@@ -31,25 +34,24 @@ const getAllStudents = async (req, res) => {
 const createStudent = async (req, res) => {
   try {
     const existingStudent = await Students.findOne({
-      email: req?.body?.email, // or rollNo / registrationNo
+      bFormNumber: req?.body?.bFormNumber,  // or rollNo / registrationNo
     });
 
-    if (!existingStudent) {
-      return res.status(400).json({
+    if (existingStudent) {
+      return res.send({
         code: 400,
-        message: "Student already exists",
+        message: "Student or B-form already exists",
       });
     }
-
+      
     const newStudent = await Students.create(req.body);
-
-    return res.status(201).json({
-      code: 201,
+    return res.send({
+      code: 200,
       data: newStudent,
       message: "Student created successfully",
     });
   } catch (err) {
-    return res.status(500).json({
+    return res.send({
       code: 500,
       message: "Server Error",
       error: err.message,
@@ -90,14 +92,6 @@ const updateStudentById = async (req, res) => {
   try {
     const studentId = req.params.id;
     const studentData = req.body;
-
-    const existingStudent = await Students.findById(studentId);
-    if (!existingStudent) {
-      return res.status(404).json({
-        code: 404,
-        message: "Student not found",
-      });
-    }
 
     const updatedStudent = await Students.findByIdAndUpdate(
       studentId,
