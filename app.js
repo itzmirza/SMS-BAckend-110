@@ -5,7 +5,9 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
 
+var dashboardRouter = require("./routes/dashboard");
 var schoolRouter = require("./routes/School");
+var parentRouter = require("./routes/parent");
 var busRouter = require("./routes/Bus");
 var driverRouter = require("./routes/Driver");
 var studentRouter = require("./routes/Student");
@@ -38,7 +40,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use("/dashboard", dashboardRouter);
 app.use("/school", schoolRouter);
+app.use("/parent", parentRouter);
+
 app.use("/bus", busRouter);
 app.use("/driver", driverRouter);
 app.use("/student", studentRouter);

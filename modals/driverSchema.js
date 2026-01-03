@@ -12,7 +12,6 @@ const driverSchema = new mongoose.Schema({
   licenseNumber: {
     type: Number,
     required: true,
-    unique: true,
   },
   busId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -34,7 +33,6 @@ const driverSchema = new mongoose.Schema({
   cnic: {
     type: Number,
     required: true,
-    unique: true,
   },
   createdAt: {
     type: Date,

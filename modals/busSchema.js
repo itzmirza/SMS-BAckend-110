@@ -4,7 +4,6 @@ const busSchema = new mongoose.Schema({
   registrationNumber: {
     type: String,
     required: true,
-    unique:true,
   },
   model: {
     type: String,
