@@ -34,7 +34,7 @@ const studentSchema = new mongoose.Schema({
   bFormNumber: {
     type: String,
     required: true,
-    unique: true,
+    
   },
   homeAddress: {
     type: String,
@@ -54,7 +54,6 @@ const studentSchema = new mongoose.Schema({
   CNIC: {
     type: Number,
     required: true,
-    unique: true,
   },
   guardianEmail: {
     type: String,
@@ -69,10 +68,10 @@ const studentSchema = new mongoose.Schema({
     required: true,
   },
   
-  classId:[{
+  classId:{
     type:mongoose.Schema.Types.ObjectId,
     ref:"Classes"
-  }],
+  },
 
 
   busId:{

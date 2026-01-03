@@ -1,4 +1,5 @@
 var Class = require("../modals/ClassesSchema");
+const teacher = require("../modals/teacher");
 var Teacher = require("../modals/teacher");
 
 // Controller function to create a new school
@@ -6,43 +7,40 @@ const getAllclasses = async (req, res) => {
   try {
     const classData = await Class.find().populate("teacherId");
     if (!classData) {
-      return res.status(400).json({ code: 400, message: "no class found" });
+      return res.send({ code: 400, message: "no class found" });
     }
-    res
-      .status(200)
-      .json({ code: 400, data: classData, message: "fetching data" });
+    res.send({ code: 200, data: classData, message: "fetching data" });
   } catch (err) {
-    return res
-      .status(500)
-      .json({ code: 500, message: "Server Error", error: err.message });
+    return res.send({ code: 500, message: "Server Error", error: err.message });
   }
 };
 
 const createClass = async (req, res) => {
   try {
-    const existingClass = await Class.findOne({ name: req?.body?.name });
+    const existingClass = await Class.findOne({
+      name: req?.body?.name,
+      section: req?.body?.section,
+    });
     if (existingClass) {
-      return res.status(400).json({
+      return res.send({
         code: 400,
         message: "This Class Already Exist",
       });
     }
     const newClass = await Class.create(req?.body);
     if (!newClass) {
-      return res.status(400).json({
+      return res.send({
         code: 400,
         message: "Something Went Wrong",
       });
     }
-    return res.status(200).json({
+    return res.send({
       code: 200,
       data: newClass,
       message: "Class Created Successfully",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .json({ code: 500, message: "Server Error", error: err.message });
+    return res.send({ code: 500, message: "Server Error", error: err.message });
   }
 };
 
@@ -53,21 +51,22 @@ const deleteClassById = async (req, res) => {
     // Check if class exists
     const existingClass = await Class.findById(classId);
     if (!existingClass) {
-      return res.status(404).json({
+      return res.send({
         code: 404,
         message: "Class Not Found",
       });
     }
-
-    // Delete class
-    await Class.findByIdAndDelete(classId);
-
-    return res.status(200).json({
+    await Teacher.updateMany({ classId: classId }, { $set: { classId: null } });
+    const deleteClass = await Class.findByIdAndDelete(classId);
+    if (!deleteClass) {
+      return res.send({ code: 400, message: "something went wrong" });
+    }
+    res.send({
       code: 200,
       message: "Class Deleted Successfully",
     });
   } catch (err) {
-    return res.status(500).json({
+    return res.send({
       code: 500,
       message: "Server Error",
       error: err.message,
@@ -75,32 +74,57 @@ const deleteClassById = async (req, res) => {
   }
 };
 
-
 const updateClassById = async (req, res) => {
   try {
     const classId = req.params.id;
-    const ClassData = req.body;
-    const existingClass = await Class.findById(classId);
-    if (!existingClass) {
-      return res.status(404).send({ code: 404, message: "Class Not Found" });
+    const { teacherId, ...ClassData } = req.body;
+    const getClass = await Class.findById(classId);
+    if (!getClass) {
+      return res.send({ code: 404, message: "Class Not Found" });
     }
-    const UpdatedClass = await Class.findByIdAndUpdate(
-      existingClass?._id,
-      ClassData,
-      { new: true }
-    );
-    if (UpdatedClass) {
-      return res.status(200).send({
-        code: 200,
-        message: "Class Updated Successfully",
-        data: UpdatedClass,
+    if (ClassData.name) {
+      const existingClass = await Class.findOne({
+        name: ClassData.name,
+        _id: { $ne: classId },
       });
+      if (existingClass) {
+        return res.send({ code: 400, message: "calss already exist" });
+      }
     }
-    return res.status(400).send({ code: 400, message: "Nothing was updated" });
+
+    const finalTeacherId = getClass.teacherId;
+    if (teacherId !== undefined) {
+      if (getClass.teacherId && getClass.teacherId.toString() !== teacherId) {
+        await Teacher.findByIdAndUpdate(finalTeacherId, { classId: null });
+      }
+      if (teacherId) {
+        const teacher = await Teacher.findById(teacherId);
+        if (!teacher) {
+          return res.send({ code: 400, Message: "Teacher not found" });
+        }
+        await Teacher.findByIdAndUpdate(teacherId, { classId });
+        finalTeacherId = teacherId;
+      } else {
+        finalTeacherId = null;
+      }
+    }
+
+    const updatedClass = await Class.findByIdAndUpdate(
+      classId,
+      { ...ClassData, teacherId: finalTeacherId },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedClass) {
+      return res.send({ code: 400, message: "Nothing was updated" });
+    }
+    res.send({
+      code: 200,
+      message: "Class Updated Successfully",
+      data: updatedClass,
+    });
   } catch (err) {
-    return res
-      .status(500)
-      .json({ code: 500, message: "Server Error", error: err.message });
+    return res.send({ code: 500, message: "Server Error", error: err.message });
   }
 };
 
