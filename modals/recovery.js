@@ -2,31 +2,28 @@ const mongoose = require('mongoose');
 
 
 const recoverySchema = new mongoose.Schema({
+
   studentId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Students',
+    required: true,
   },
-  studentName: {
-    type: String,
+  classId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Classes',
+    required: true,
   },
-  class: {
-    type: String,
-  },
-   totalFee: {
+  totalFee: {
     type: Number,
+    required: true,
   },
   paidFee: {
     type: Number,
-  },
-  remainingFee: {
-    type: Number,
-  },
-  status:{
-    type: String,
+    required: true,
   },
 
-  
 });
 
-const recovery= mongoose.model('Recovery',recoverySchema);
+const recovery = mongoose.model('Recovery', recoverySchema);
 
-module.exports=recovery;
+module.exports = recovery;
